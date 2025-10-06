@@ -1,5 +1,10 @@
 const express = require('express');
+const  bodyParser = require('body-parser');
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true })); // to parse form data 
 
 //  Global middleware #1 — Logger
 app.use((req, res, next) => {
@@ -17,18 +22,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>Welcome to the Home Page!</h1>');
-});
-
-app.get('/products', (req, res) => {
-  res.send('<h1>Here is the list of products.</h1>');
-});
-
-
-app.get('/about', (req, res) => {
-  res.send('<h1>About our company.</h1>');
-});
-
+app.use( adminRoutes);
+app.use( shopRoutes);
+ 
 //  Start Server
 app.listen(3004);
