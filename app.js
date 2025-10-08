@@ -1,29 +1,36 @@
-const express = require('express');
-const  bodyParser = require('body-parser');
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+const path = require("path");
+const express = require("express");
+const bodyParser = require("body-parser");
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true })); // to parse form data 
+app.use(bodyParser.urlencoded({ extended: true })); // to parse form data
 
 //  Global middleware #1 — Logger
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
-  next(); 
+  next();
 });
 
 //  Global middleware #2 — Fake Authentication
 app.use((req, res, next) => {
   const isLoggedIn = true; // simulate login check
   if (!isLoggedIn) {
-    return res.status(401).send('Unauthorized user');
+    return res.status(401).send("Unauthorized user");
   }
-  console.log('User authenticated');
+  console.log("User authenticated");
   next();
 });
 
-app.use( adminRoutes);
-app.use( shopRoutes);
- 
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
+
+app.use((req, res) => {
+  res
+    .status(404)
+    .sendFile(path.join(__dirname, "./", "views", "not-found.html"));
+});
+
 //  Start Server
 app.listen(3004);
